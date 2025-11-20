@@ -1,1 +1,1 @@
-# redis-k8s-minimal
+# redis-k8s-minimal docs should be here
