@@ -1,0 +1,69 @@
+name: Build and publish OCA Repository Helm Chart
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+    paths-ignore:
+      - 'releases/**'
+  pull_request:
+    branches:
+      - '**'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build_chart:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Install Helm
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      # Run version.sh (same as your server job, but no docker stuff)
+      - name: Make versions
+        run: |
+          cd "${{ github.workspace }}"
+          chmod +x ./tools/version.sh
+          ./tools/version.sh "${{ env.REGISTRY }}/${{ vars.DOCKER_IMAGE_NAME }}"
+          echo "VERSION_APP=$(cat ./VERSION_APP)" >> $GITHUB_ENV
+          echo "CHART_VERSION=$(cat ./VERSION_CHART)" >> $GITHUB_ENV
+
+      # Package Helm chart
+      - name: Package Helm chart
+        run: |
+          cd server/charts
+          helm dependency update redis-repository || true
+          helm lint redis-repository
+          helm package redis-repository \
+            --version $CHART_VERSION \
+            --app-version $VERSION_APP
+          mkdir -p ../../helm-charts
+          mv redis-repository-$CHART_VERSION.tgz ../../helm-charts/
+
+      # Create GitHub release (tag = VERSION_APP)
+      - name: Create GitHub Release
+        run: gh release create "${{ env.VERSION_APP }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Publish Helm chart to gh-pages
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          charts_dir: "./server/charts"
+          target_dir: "./helm-charts/"
