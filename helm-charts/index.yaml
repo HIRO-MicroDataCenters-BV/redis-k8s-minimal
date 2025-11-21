@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   redis-repository:
   - apiVersion: v2
+    appVersion: 0.1.0-dev.3.helm-chart.baf7c424
+    created: "2025-11-21T11:14:32.674545926Z"
+    description: A Helm chart for deploying DS Redis
+    digest: 8251c66c7fcad6b277239491d879f2e4a1fd04107523a112f15ff44712693a40
+    name: redis-repository
+    type: application
+    urls:
+    - https://HIRO-MicroDataCenters-BV.github.io/redis-k8s-minimal/helm-charts/redis-repository-0.1.0-dev.3.helm-chart.baf7c424.tgz
+    version: 0.1.0-dev.3.helm-chart.baf7c424
+  - apiVersion: v2
     appVersion: 0.1.0-dev.2.helm-chart.56418491
     created: "2025-11-20T13:10:41.902775257Z"
     description: A Helm chart for deploying DS Redis
@@ -22,4 +32,4 @@ entries:
     urls:
     - https://HIRO-MicroDataCenters-BV.github.io/redis-k8s-minimal/helm-charts/redis-repository-0.1.0-dev.2.helm-chart.56418491.tgz
     version: 0.1.0-dev.2.helm-chart.56418491
-generated: "2025-11-20T13:10:41.902219681Z"
+generated: "2025-11-21T11:14:32.673951382Z"
