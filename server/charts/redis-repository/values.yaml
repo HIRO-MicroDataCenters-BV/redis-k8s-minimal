@@ -54,7 +54,7 @@ env:
 
 
 nodeSelector:
-  minikube.k8s.io/primary: "true"
+  role: marketplace
 
 resources:
   requests:
